@@ -1,0 +1,308 @@
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0 4px;
+  animation: bt-pop 0.35s ease both;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-shadow: 0 0 22px var(--glow);
+}
+
+.sub {
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.spread {
+  --card-w: 176px;
+  --card-h: 250px;
+  --emoji: 44px;
+  --name: 20px;
+  --dot: 6px;
+
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: flex-start;
+  perspective: 1000px;
+}
+
+.spread[data-three] {
+  --card-w: 96px;
+  --card-h: 146px;
+  --emoji: 26px;
+  --name: 13px;
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: var(--card-w);
+}
+
+/*
+ * Where view transitions exist, the cards fly in from the fan and the screen
+ * must not also pop — the two would fight. Where they don't, the screen pops
+ * and the cards deal themselves in one after another.
+ */
+@supports (view-transition-name: none) {
+  .screen {
+    animation: none;
+  }
+}
+
+@supports not (view-transition-name: none) {
+  .slot {
+    animation: bt-deal 0.45s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+  }
+
+  .slot:nth-child(2) {
+    animation-delay: 90ms;
+  }
+
+  .slot:nth-child(3) {
+    animation-delay: 180ms;
+  }
+}
+
+.slotLabel {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 26px;
+  font-size: 10px;
+  line-height: 1.1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--dim);
+}
+
+/* carries the view-transition-name so the flipper keeps its own 3D context */
+.cardFrame {
+  width: var(--card-w);
+  height: var(--card-h);
+}
+
+.flipper {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  padding: 0;
+  border: 0;
+  background: none;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.3, 1.2, 0.4, 1);
+  cursor: pointer;
+}
+
+.flipper[data-flipped] {
+  transform: rotateY(180deg);
+}
+
+.flipper[data-lifted] {
+  transform: rotateY(180deg) translateY(-6px);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--acc);
+  border-radius: 14px;
+  background: var(--card);
+  box-shadow: 0 0 18px var(--glow);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.face[data-side="front"] {
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 6px;
+  padding: 10px;
+  border-width: 2px;
+  box-shadow: 0 0 26px var(--glow);
+  text-align: center;
+  transform: rotateY(180deg);
+}
+
+.faceEmoji {
+  font-size: var(--emoji);
+  line-height: 1;
+  filter: drop-shadow(0 0 10px var(--glow));
+}
+
+.faceNum {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--dim);
+}
+
+.faceName {
+  font-size: var(--name);
+  font-weight: 800;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 132px;
+  padding: 16px 18px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+  text-align: center;
+}
+
+.detailLabel {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--acc);
+}
+
+.detailText {
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.actions button:last-child {
+  width: auto;
+  padding: 16px 18px;
+  font-size: 15px;
+}
+
+@media (min-width: 1000px) {
+  .screen {
+    padding: 20px 0 4px;
+  }
+
+  .heading {
+    font-size: 30px;
+  }
+
+  .sub {
+    font-size: 14px;
+  }
+
+  .spread {
+    --card-w: 300px;
+    --card-h: 430px;
+    --emoji: 72px;
+    --name: 34px;
+    --dot: 10px;
+
+    gap: 26px;
+    perspective: 1600px;
+  }
+
+  .spread[data-three] {
+    --card-w: 230px;
+    --card-h: 340px;
+    --emoji: 52px;
+    --name: 26px;
+  }
+
+  .slot {
+    gap: 12px;
+  }
+
+  .slotLabel {
+    height: 16px;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+  }
+
+  .flipper {
+    transition: transform 0.8s cubic-bezier(0.3, 1.15, 0.4, 1);
+  }
+
+  .flipper[data-lifted] {
+    transform: rotateY(180deg) translateY(-8px);
+  }
+
+  .face {
+    border-radius: 20px;
+    box-shadow: 0 0 26px rgba(200, 139, 255, 0.4);
+  }
+
+  .face[data-side="front"] {
+    gap: 10px;
+    padding: 22px;
+    box-shadow: 0 0 40px var(--glow);
+  }
+
+  .faceEmoji {
+    filter: drop-shadow(0 0 14px var(--glow));
+  }
+
+  .faceNum {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+  }
+
+  .detail {
+    width: 760px;
+    min-height: 120px;
+    padding: 22px 30px;
+    gap: 10px;
+  }
+
+  .detailLabel {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+  }
+
+  .detailText {
+    max-width: 620px;
+    font-size: 19px;
+  }
+
+  .actions {
+    justify-content: center;
+    width: auto;
+    gap: 14px;
+  }
+
+  .actions button:last-child {
+    padding: 17px 34px;
+    font-size: 16px;
+  }
+}

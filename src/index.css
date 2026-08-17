@@ -1,0 +1,155 @@
+:root {
+  --bg: #1a0728;
+  --bg-glow:
+    radial-gradient(
+      90% 55% at 80% 8%,
+      rgba(255, 138, 212, 0.35) 0%,
+      rgba(26, 7, 40, 0) 60%
+    ),
+    radial-gradient(
+      80% 50% at 10% 90%,
+      rgba(176, 107, 255, 0.32) 0%,
+      rgba(26, 7, 40, 0) 65%
+    );
+
+  --ink: #fff0fb;
+  --dim: rgba(255, 222, 244, 0.65);
+  --line: rgba(200, 139, 255, 0.38);
+  --acc: #c88bff;
+  --acc2: #ff5fbf;
+  --glow: rgba(200, 139, 255, 0.45);
+
+  /* cards are opaque — nothing shows through the backs */
+  --card: linear-gradient(160deg, #34164d 0%, #1c0a2c 55%, #240f38 100%);
+  --btn: rgba(255, 255, 255, 0.08);
+  --r: 30px;
+
+  --title: "Bitcount Grid Single", "Bitcount Grid", ui-monospace, monospace;
+  --display: Silkscreen, ui-monospace, monospace;
+  --sans: Outfit, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* width of the content column — phone-sized until the desktop breakpoint */
+  --frame: 430px;
+
+  color-scheme: dark;
+  color: var(--ink);
+  font: 400 16px/1.45 var(--sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--bg);
+  overscroll-behavior: none;
+}
+
+#root {
+  position: relative;
+  width: 100%;
+  max-width: var(--frame);
+  min-height: 100dvh;
+  margin-inline: auto;
+  isolation: isolate;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+@media (min-width: 1000px) {
+  :root {
+    --frame: 1440px;
+    --bg-glow:
+      radial-gradient(
+        70% 60% at 50% -10%,
+        rgba(200, 139, 255, 0.3) 0%,
+        rgba(26, 7, 40, 0) 65%
+      ),
+      radial-gradient(
+        50% 45% at 88% 92%,
+        rgba(255, 95, 191, 0.2) 0%,
+        rgba(26, 7, 40, 0) 70%
+      );
+  }
+}
+
+@keyframes bt-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes bt-twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* the picked cards flying from the fan into their reveal slots */
+::view-transition-group(*) {
+  animation-duration: 520ms;
+  animation-timing-function: cubic-bezier(0.3, 0.9, 0.25, 1);
+}
+
+/* everything that isn't a card just cross-fades underneath them */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 340ms;
+}
+
+/* fallback deal-in, for browsers with no view transitions */
+@keyframes bt-deal {
+  from {
+    transform: translateY(30px) scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes bt-pop {
+  from {
+    transform: scale(0.86);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+  }
+}

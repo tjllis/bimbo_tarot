@@ -1,0 +1,17 @@
+.dots {
+  display: grid;
+  grid-template-columns: repeat(3, var(--dot, 7px));
+  gap: calc(var(--dot, 7px) + 2px);
+  opacity: 0.85;
+}
+
+.dots span {
+  width: var(--dot, 7px);
+  height: var(--dot, 7px);
+  border-radius: 99px;
+  background: var(--acc);
+}
+
+.dots span[data-tone="2"] {
+  background: var(--acc2);
+}

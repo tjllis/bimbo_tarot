@@ -1,0 +1,44 @@
+.app {
+  position: relative;
+  min-height: 100dvh;
+  /* the fan can spill sideways; a short window should scroll, not clip */
+  overflow-x: hidden;
+}
+
+.screen {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--frame);
+  min-height: 100dvh;
+  margin-inline: auto;
+  padding: calc(8px + env(safe-area-inset-top)) 22px
+    calc(30px + env(safe-area-inset-bottom));
+}
+
+.statusBar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 46px;
+  padding-bottom: 6px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--dim);
+}
+
+.battery {
+  opacity: 0.8;
+}
+
+@media (min-width: 1000px) {
+  .screen {
+    padding: 34px 64px 44px;
+  }
+
+  .statusBar {
+    display: none;
+  }
+}

@@ -1,0 +1,167 @@
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 26px;
+  animation: bt-pop 0.35s ease both;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+}
+
+.orb {
+  font-size: 46px;
+  line-height: 1;
+  animation: bt-float 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 22px var(--glow));
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-shadow: 0 0 26px var(--glow);
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--dim);
+  text-wrap: pretty;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--r);
+  background: var(--card);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.option:hover {
+  box-shadow: 0 0 34px var(--glow);
+}
+
+.option:active {
+  transform: scale(0.97);
+}
+
+.optionEmoji {
+  font-size: 30px;
+  line-height: 1;
+  filter: drop-shadow(0 0 12px var(--glow));
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.optionName {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.optionBlurb {
+  font-size: 13px;
+  color: var(--dim);
+}
+
+.footnote {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+@media (min-width: 1000px) {
+  .screen {
+    align-items: center;
+    gap: 44px;
+  }
+
+  .intro {
+    gap: 14px;
+  }
+
+  .orb {
+    font-size: 60px;
+    filter: drop-shadow(0 0 26px rgba(200, 139, 255, 0.5));
+  }
+
+  .heading {
+    font-size: 46px;
+    text-shadow: 0 0 30px var(--glow);
+  }
+
+  .sub {
+    font-size: 17px;
+  }
+
+  /* the two readings sit side by side once there's room */
+  .options {
+    flex-direction: row;
+    gap: 28px;
+  }
+
+  .option {
+    width: 420px;
+    padding: 38px 34px;
+  }
+
+  .option:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 46px var(--glow);
+  }
+
+  .option:active {
+    transform: scale(0.98);
+  }
+
+  .optionEmoji {
+    font-size: 40px;
+    filter: drop-shadow(0 0 14px var(--glow));
+  }
+
+  .optionText {
+    gap: 6px;
+  }
+
+  .optionName {
+    font-size: 26px;
+  }
+
+  .optionBlurb {
+    font-size: 15px;
+  }
+
+  .footnote {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: rgba(255, 222, 244, 0.45);
+  }
+}

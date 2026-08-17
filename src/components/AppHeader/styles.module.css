@@ -1,0 +1,134 @@
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px 0 14px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--title);
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: var(--acc);
+  text-shadow: 0 0 18px var(--glow);
+}
+
+/* the title doubles as a way home — it inherits the display face entirely */
+.home {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    text-shadow 0.2s ease,
+    transform 0.12s ease;
+}
+
+.home:hover {
+  text-shadow: 0 0 26px var(--acc);
+}
+
+.home:active {
+  transform: scale(0.97);
+}
+
+/* phone: the back button floats, centred on the title itself */
+.side {
+  display: contents;
+}
+
+.back {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--btn);
+  color: var(--ink);
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.back:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+.steps {
+  display: none;
+}
+
+@media (min-width: 1000px) {
+  .header {
+    /* equal-width sides push the title to true centre */
+    justify-content: space-between;
+    padding: 0 0 8px;
+  }
+
+  .title {
+    font-size: 38px;
+    text-shadow: 0 0 24px rgba(200, 139, 255, 0.5);
+  }
+
+  /* desktop: back left, title centred, step chips right — three real columns */
+  .side {
+    display: flex;
+    align-items: center;
+    width: 280px;
+  }
+
+  .side[data-steps] {
+    justify-content: flex-end;
+  }
+
+  .back {
+    position: static;
+    translate: none;
+    width: 40px;
+    height: 40px;
+    font-size: 17px;
+  }
+
+  .back:active {
+    transform: scale(0.92);
+  }
+
+  .steps {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .step {
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    transition: background 0.2s ease;
+  }
+
+  .step[data-current] {
+    background: rgba(200, 139, 255, 0.28);
+  }
+}
