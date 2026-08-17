@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Button from "../../components/Button/Button";
 import CardBack from "../../components/CardBack/CardBack";
 import { POSITIONS, type CardData } from "../../data/deck";
+import { readingUrl } from "../../lib/permalink";
 import styles from "./styles.module.css";
 
 interface Props {
@@ -58,7 +59,16 @@ export default function RevealScreen(props: Props) {
         ].join("\n")
       : `The cards have spoken. Here's my card of the day:\n${cards[0]}`;
 
-    void navigator.clipboard?.writeText(text).catch(() => {});
+    // a link back to this exact spread, so they see the cards, not a retelling
+    const url = readingUrl(props.reading);
+
+    // phones have a real share sheet; on desktop it's a worse clipboard
+    if (!props.isDesktop && navigator.share) {
+      void navigator.share({ text, url }).catch(() => {});
+      return;
+    }
+
+    void navigator.clipboard?.writeText(`${text}\n${url}`).catch(() => {});
     setShared(true);
     if (timer.current !== null) clearTimeout(timer.current);
     timer.current = window.setTimeout(() => setShared(false), 1800);
@@ -125,10 +135,12 @@ export default function RevealScreen(props: Props) {
       </div>
 
       <div className={styles.actions}>
+        {/* nothing to share until the cards are actually face up */}
         <Button
           label={shared ? "copied to the group chat ✓" : "share this 💌"}
           variant="primary"
           grow
+          disabled={!allFlipped}
           onClick={share}
         />
         <Button label="again" onClick={props.onRestart} />

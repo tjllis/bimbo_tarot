@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { type CardData } from "../data/deck";
 import { DEALT, deal, type FanTuning } from "../lib/fan";
+import { clearPermalink, decodeReading } from "../lib/permalink";
 
 export type Screen = "pick" | "shuffle" | "reveal";
 
@@ -14,6 +15,8 @@ interface State {
   picked: number[];
   flipped: number[];
   active: number | null;
+  /** True when this reading arrived as a link rather than being dealt here. */
+  fromLink: boolean;
 }
 
 const INITIAL: State = {
@@ -25,7 +28,30 @@ const INITIAL: State = {
   picked: [],
   flipped: [],
   active: null,
+  fromLink: false,
 };
+
+/**
+ * A ?cards= link opens straight onto the finished reading, face up — the
+ * point of sharing is the result, not making the recipient shuffle for it.
+ */
+function initialState(): State {
+  const shared = decodeReading(window.location.search);
+  if (!shared) return INITIAL;
+
+  const slots = shared.map((_, i) => i);
+  return {
+    screen: "reveal",
+    spread: shared.length,
+    amount: 100,
+    seed: 0,
+    fan: shared,
+    picked: slots,
+    flipped: slots,
+    active: 0,
+    fromLink: true,
+  };
+}
 
 /**
  * Run a state change as a view transition, so the cards keep their identity and
@@ -50,7 +76,7 @@ const DRAG_THRESHOLD = 6;
 const MAX_DRAG_STEP = 9;
 
 export function useReading(tuning: FanTuning) {
-  const [state, setState] = useState<State>(INITIAL);
+  const [state, setState] = useState<State>(initialState);
   const auto = useRef<number | null>(null);
 
   const stopAuto = useCallback(() => {
@@ -75,6 +101,8 @@ export function useReading(tuning: FanTuning) {
   const start = useCallback(
     (spread: number) => {
       stopAuto();
+      // dealing your own cards invalidates whatever link brought you here
+      clearPermalink();
       setState({ ...INITIAL, screen: "shuffle", spread, fan: deal(DEALT) });
     },
     [stopAuto],
@@ -138,15 +166,19 @@ export function useReading(tuning: FanTuning) {
 
   const back = useCallback(() => {
     stopAuto();
-    setState((s) =>
-      s.screen === "reveal"
-        ? { ...s, screen: "shuffle" }
-        : { ...INITIAL, screen: "pick" },
-    );
+    setState((s) => {
+      // a reading opened from a link has no shuffle behind it to go back to
+      if (s.screen === "reveal" && !s.fromLink) {
+        return { ...s, screen: "shuffle" };
+      }
+      clearPermalink();
+      return { ...INITIAL, screen: "pick" };
+    });
   }, [stopAuto]);
 
   const restart = useCallback(() => {
     stopAuto();
+    clearPermalink();
     setState({ ...INITIAL });
   }, [stopAuto]);
 

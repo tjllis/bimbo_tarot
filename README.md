@@ -79,14 +79,88 @@ into a position, rotation, lift, and glow for every card. Its wobble comes from 
 `sin`, so re-renders never re-scatter the deck — only a bumped seed does. Phone and desktop
 pass different tunings to the same function.
 
-**Cards fly between screens.** Each picked card carries a `view-transition-name` in the fan,
-and the reveal screen claims the same name, so the browser animates the same card across
-instead of cutting. Browsers without view transitions get a staggered deal-in, and
-`prefers-reduced-motion` gets neither.
-
 **Two layouts, one breakpoint** at 1000px — wide enough for a fully-opened nine-card fan.
 Almost all of it is CSS custom properties; only the fan geometry and the click/tap wording
 need JavaScript to know which side of the line they're on.
+
+### The star field is a canvas
+
+[`StarCanvas`](src/components/StarCanvas/StarCanvas.tsx) is a fixed, full-viewport
+`<canvas>` sitting behind the app at `z-index: 0` with `pointer-events: none`, so it never
+intercepts a drag meant for the deck.
+
+160 stars are generated once, each with its own position, radius, drift speed, and — the
+part that matters — a random starting **phase**:
+
+```ts
+const opacity =
+  0.15 + 0.85 * (0.5 + 0.5 * Math.sin(n * 0.005 * star.speed + star.phase));
+```
+
+`Math.sin` returns -1…1, so `0.5 + 0.5 * sin` maps to 0…1, and the `0.15` floor stops any
+star blinking fully out. Because every star gets a different phase and speed, they twinkle
+independently instead of pulsing in unison, which is what makes it read as a sky rather than
+a flashing overlay.
+
+The loop runs on `requestAnimationFrame`, and a `ResizeObserver` keeps the canvas's
+**drawing buffer** (`canvas.width/height`) in sync with its **laid-out size**
+(`offsetWidth/Height`). Those are two different things — let them drift apart and the whole
+sky renders stretched. The effect cleans up after itself: cancel the frame, disconnect the
+observer.
+
+Why a canvas and not CSS? 160 independently-phased elements animating every frame is a lot
+of nodes for the compositor to juggle. One canvas draws the lot in a single pass per frame,
+and nothing lands in the DOM.
+
+### Cards fly between screens
+
+Going from the fan to the reading used to be a hard cut. Now the cards you picked physically
+travel into their slots, using the
+[View Transitions API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API).
+
+The whole trick is giving the *same* `view-transition-name` to the card in both screens. The
+browser then treats them as one element that moved, and interpolates position, size, and
+rotation itself — no FLIP maths, no measuring.
+
+```tsx
+// ShuffleScreen — the card sitting in the fan
+viewTransitionName: isPicked ? `card-${i}` : undefined
+
+// RevealScreen — the same card in its slot
+<div className={styles.cardFrame} style={{ viewTransitionName: `card-${index}` }}>
+```
+
+The state change is wrapped so the browser can snapshot before and after
+([`useReading`](src/hooks/useReading.ts)):
+
+```ts
+start(() => flushSync(update));
+```
+
+`flushSync` is load-bearing. React batches by default, so without it the callback returns
+before the DOM has actually changed and the browser snapshots the *old* state twice.
+
+Timing lives in [`index.css`](src/index.css) — 520ms for the cards on a decelerating curve,
+340ms for the cross-fade of everything else, so the cards land last and read as the subject.
+
+**One trap worth knowing:** `view-transition-name` forces the element's *used*
+`transform-style` to `flat`. Put it on the flipper itself and the 3D context dies, which
+silently breaks `backface-visibility` — the card rotates but never shows its face.
+`getComputedStyle` still reports `preserve-3d`, so it's invisible in DevTools. Hence the
+`.cardFrame` wrapper: it carries the name, the flipper keeps its 3D.
+
+Two fallbacks, both feature-detected rather than sniffed:
+
+```css
+@supports not (view-transition-name: none) {
+  /* no view transitions: deal the cards in, 90ms apart */
+}
+@supports (view-transition-name: none) {
+  /* view transitions: turn off the screen-level pop so they don't fight */
+}
+```
+
+And `prefers-reduced-motion: reduce` skips the transition entirely for a plain swap.
 
 ## Deploying
 
