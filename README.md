@@ -23,7 +23,9 @@ A **one-card pull** gives you today's general reading. A **three-card spread** r
 deck three different ways — the same card means one thing as your last situationship and
 something else entirely as your villain arc.
 
-"share this 💌" copies the whole reading to your clipboard, ready to paste into the group chat.
+Once every card is face up, "share this 💌" hands you a link to that exact spread — open it
+and the reading is right there, cards and all. No spoilers in the message itself, just
+"The cards have spoken. Here's my result:" and the link.
 
 ## On a phone
 

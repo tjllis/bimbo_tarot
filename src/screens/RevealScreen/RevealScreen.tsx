@@ -49,17 +49,8 @@ export default function RevealScreen(props: Props) {
       : "tap a card, bestie";
 
   const share = () => {
-    const cards = props.reading.map(
-      (c, i) => `${c.name} — ${readingFor(c, i)}`,
-    );
-    const text = isThree
-      ? [
-          "The cards have spoken. Here's my reading:",
-          ...cards.map((card, i) => `${POSITIONS[i].share}: ${card}`),
-        ].join("\n")
-      : `The cards have spoken. Here's my card of the day:\n${cards[0]}`;
-
-    // a link back to this exact spread, so they see the cards, not a retelling
+    // no retelling — the link opens the cards themselves
+    const text = "The cards have spoken. Here's my result:";
     const url = readingUrl(props.reading);
 
     // phones have a real share sheet; on desktop it's a worse clipboard
