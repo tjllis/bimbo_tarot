@@ -73,7 +73,7 @@
   display: none;
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 1280px) {
   .header {
     /* equal-width sides push the title to true centre */
     justify-content: space-between;
@@ -117,6 +117,8 @@
   }
 
   .step {
+    min-width: 100px;
+    white-space: nowrap;
     padding: 8px 14px;
     border: 1px solid var(--line);
     border-radius: 999px;
@@ -124,6 +126,7 @@
     font-size: 11px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
+    text-align: center;
     color: var(--ink);
     transition: background 0.2s ease;
   }
